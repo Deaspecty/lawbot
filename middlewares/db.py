@@ -17,6 +17,6 @@ class DbMiddleware(BaseMiddleware):
         user = cursor.fetchone()
         if user is None or user == ():
             cursor.execute("INSERT INTO users(id, fullname, is_admin) VALUES (%s, %s, false)",
-                           (event.from_user.id, event.from_user.fullname))
+                           (event.from_user.id, event.from_user.full_name))
         data["user"] = user
         return await handler(event, data)
