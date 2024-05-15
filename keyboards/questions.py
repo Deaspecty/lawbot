@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from keyboards.callbacks import AnswerCallback, CategoryCallback
-from models.question import get_all_questions
+from models.question import get_questions
 
 
 def yes_or_no():
@@ -13,7 +13,7 @@ def yes_or_no():
 def category_keyboard(cursor):
     category_count = 0
     ikb = []
-    for q in get_all_questions(cursor):
+    for q in get_questions(cursor):
         if category_count < q[3]:
             category_count = q[3]
     for i in range(1, category_count+1):

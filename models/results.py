@@ -1,13 +1,14 @@
 import json
-from models.question import get_questions_by_category, get_all_questions
+from models.question import get_questions, get_questions
 
 
 def find_result(cursor, combination: list[bool], id: int):
-    questions = get_questions_by_category(cursor, id)
+    questions = get_questions(cursor, id)
     json_combination = {}
     if len(combination) == len(questions):
         for i in range(len(questions)):
-            json_combination.update({questions[i][1]: combination[i]})
+            if type(combination[i]) == bool:
+                json_combination.update({questions[i][1]: combination[i]})
         json_combination = json.dumps(json_combination)
 
         cursor.execute("SELECT * FROM results WHERE combination = %s", (json_combination,))
@@ -33,8 +34,8 @@ def generate_bool_arrays(n):
 
 def create_all_combinations(cursor):
     for id in [1, 2, 3]:
-        for combination in generate_bool_arrays(3):
-            questions = get_questions_by_category(cursor, id)
+        questions = get_questions(cursor, id, "bool")
+        for combination in generate_bool_arrays(len(questions)):
             json_combination = {}
             if len(combination) == len(questions):
                 for i in range(len(questions)):
