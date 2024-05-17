@@ -13,12 +13,4 @@ class DbMiddleware(BaseMiddleware):
                        data: Dict[str, Any]):
         cursor = config.config.con.cursor()
         data["cursor"] = cursor
-        cursor.execute(f"SELECT * FROM users WHERE id = {event.from_user.id}")
-        user = cursor.fetchone()
-        if user is None or user == ():
-            cursor.execute("INSERT INTO users(id, fullname, is_admin) VALUES (%s, %s, false)",
-                           (event.from_user.id, event.from_user.full_name))
-            cursor.execute(f"SELECT * FROM users WHERE id = {event.from_user.id}")
-            user = cursor.fetchone()
-        data["user"] = user
         return await handler(event, data)

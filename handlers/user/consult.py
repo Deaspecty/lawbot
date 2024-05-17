@@ -16,7 +16,7 @@ router = Router()
 
 
 @router.callback_query(AnswerCallback.filter(), QuestionState.wait_bool)
-async def consult_answer(callback: CallbackQuery, callback_data: AnswerCallback, state: FSMContext, cursor, user):
+async def consult_answer(callback: CallbackQuery, callback_data: AnswerCallback, state: FSMContext, cursor):
     data = await state.get_data()
     category_id = data.get("category_id")
     questions = get_questions(cursor, category_id=category_id)
@@ -38,7 +38,7 @@ async def consult_answer(callback: CallbackQuery, callback_data: AnswerCallback,
 
 
 @router.message(F.text, QuestionState.wait_text)
-async def consult_answer(message: Message, state: FSMContext, cursor, user):
+async def consult_answer(message: Message, state: FSMContext, cursor):
     data = await state.get_data()
     category_id = data.get("category_id")
     msg_id = data.get("msg_id")
@@ -63,7 +63,7 @@ async def consult_answer(message: Message, state: FSMContext, cursor, user):
 
 
 @router.callback_query(CategoryCallback.filter(F.action == "choose"))
-async def choose_category(callback: CallbackQuery, callback_data: CategoryCallback, state: FSMContext, cursor, user):
+async def choose_category(callback: CallbackQuery, callback_data: CategoryCallback, state: FSMContext, cursor):
     category_id = callback_data.category_id
     questions = get_questions(cursor, category_id=category_id)
     if questions[0][4] == "bool":
