@@ -2,22 +2,16 @@ import json
 from models.question import get_questions, get_questions
 
 
-def find_result(cursor, combination: list[bool], id: int):
+def find_result(cursor, combination: list, id: int):
     questions = get_questions(cursor, id)
-    json_combination = {}
     if len(combination) == len(questions):
+        text = f"Ответы на вопросы из категории {id}: \n"
         for i in range(len(questions)):
             if type(combination[i]) == bool:
-                json_combination.update({questions[i][1]: combination[i]})
-        json_combination = json.dumps(json_combination)
-
-        cursor.execute("SELECT * FROM results WHERE combination = %s", (json_combination,))
-        results = cursor.fetchone()
-        if results is not None and results[2] is not None:
-            return results[2]
-        else:
-            cursor.execute("INSERT INTO results(combination) VALUES (%s)", (json_combination,))
-            return "COMBINATION NOT FOUND!"
+                text += f"{questions[i][1]} - {'Да' if combination[i] else 'Нет'}\n"
+            else:
+                text += f"{questions[i][1]} - {combination[i]}\n"
+        return text
 
 
 def generate_bool_arrays(n):
