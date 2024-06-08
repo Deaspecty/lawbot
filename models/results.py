@@ -2,10 +2,10 @@ import json
 from models.question import get_questions, get_questions
 
 
-def find_result(cursor, combination: list, id: int):
+def find_result(cursor, combination: list, id: int, name: str):
     questions = get_questions(cursor, id)
     if len(combination) == len(questions):
-        text = f"Ответы на вопросы из категории {id}: \n"
+        text = f"Ответы на вопросы из категории {name}: \n"
         for i in range(len(questions)):
             if type(combination[i]) == bool:
                 text += f"{questions[i][1]} - {'Да' if combination[i] else 'Нет'}\n"
@@ -24,26 +24,3 @@ def generate_bool_arrays(n):
             result.append(array + [False])
             result.append(array + [True])
         return result
-
-
-def create_all_combinations(cursor):
-    for id in [1, 2, 3]:
-        questions = get_questions(cursor, id, "bool")
-        for combination in generate_bool_arrays(len(questions)):
-            json_combination = {}
-            if len(combination) == len(questions):
-                for i in range(len(questions)):
-                    json_combination.update({questions[i][1]: combination[i]})
-                json_combination = json.dumps(json_combination)
-
-                cursor.execute("SELECT * FROM results WHERE combination = %s", (json_combination,))
-                results = cursor.fetchone()
-                if results is not None and results[2] is not None:
-                    continue
-                else:
-                    result_str = f"Ответ из категории {id}, " \
-                                 f"исходя из ответов {'-'.join(['Да' if i else 'Нет' for i in combination])}"
-                    cursor.execute("INSERT INTO results(combination, result) VALUES (%s, %s)",
-                                   (json_combination, result_str))
-
-

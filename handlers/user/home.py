@@ -14,4 +14,4 @@ async def home(message: Message, state: FSMContext, cursor):
     await state.set_state(HomeState.wait_home)
     await message.answer(text="Привет я Юрист-бот! "
                               "\n\nВыберите категорию:"
-                              "\nСтудент\nРабочий\nВоенный", reply_markup=category_keyboard(cursor))
+                              "\nСтудент\nРабочий", reply_markup=category_keyboard())

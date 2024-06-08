@@ -1,5 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from keyboards.callbacks import AnswerCallback, CategoryCallback
+from keyboards.callbacks import AnswerCallback, CategoryCallback, HomeCallback
 from models.question import get_questions
 
 
@@ -10,13 +10,17 @@ def yes_or_no():
     ]])
 
 
-def category_keyboard(cursor):
-    category_count = 0
-    ikb = []
-    for q in get_questions(cursor):
-        if category_count < q[3]:
-            category_count = q[3]
-    for i in range(1, category_count+1):
-        ikb.append(InlineKeyboardButton(text=str(i),
-                                        callback_data=CategoryCallback(action="choose", category_id=i).pack()))
-    return InlineKeyboardMarkup(inline_keyboard=[ikb])
+def c_u_a():
+    return InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="Колледж", callback_data=AnswerCallback(action="cg").pack()),
+        InlineKeyboardButton(text="Универ", callback_data=AnswerCallback(action="vuz").pack()),
+        InlineKeyboardButton(text="Армия", callback_data=AnswerCallback(action="army").pack())
+    ]])
+
+
+def category_keyboard():
+    ikb = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="Студент", callback_data=HomeCallback(action=1).pack()),
+        InlineKeyboardButton(text="Рабочий", callback_data=HomeCallback(action=2).pack())
+    ]])
+    return ikb
